@@ -13,6 +13,11 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -21,13 +26,15 @@ public class GuiHelper {
 
 	private static GuiHelper instance;
 	public static GuiHelper instance() {
-		if(instance == null)
+		if(instance == null) {
 			instance = new GuiHelper();
+			MinecraftForge.EVENT_BUS.register(instance);
+		}
 		return instance;
 	}
 	
-	private Minecraft mc;
-	private FontRenderer fontRendererObj;
+	public static Minecraft mc;
+	public static FontRenderer fontRendererObj;
 	private RenderItem itemRender;
 	
 	public float zLevel = 0;
@@ -83,6 +90,46 @@ public class GuiHelper {
 
 		FontRenderer font = stack.getItem().getFontRenderer(stack);
 		drawHoveringText(list, mouseX, mouseY, (font == null ? fontRendererObj : font));
+	}
+	
+	// vvvv tick handler vvvv
+	
+	private int ticks;
+	private float partialTicks;
+	
+	@SubscribeEvent
+	public void renderTick(RenderTickEvent event) {
+		if(event.phase == Phase.START)
+			partialTicks = event.renderTickTime;
+	}
+
+	@SubscribeEvent
+	public void clientTickEnd(ClientTickEvent event) {
+		if(event.phase == Phase.END) {
+			ticks++;
+		}
+	}
+	
+	public double getTicks() {
+		return ticks+partialTicks;
+	}
+	
+	public double tickAnimate(double start, double length) {
+		return (getTicks()-start)/length;
+	}
+	
+	double intrFrac;
+	
+	public void loadInterpolationFraction(double frac) {
+		intrFrac = frac;
+	}
+	
+	public int intr(int from, int to) {
+		return (int)intr((double)from, (double)to);
+	}
+	
+	public double intr(double from, double to) {
+		return from + (intrFrac * (to-from) );
 	}
 	
 	// vvvv more obscure/complicated stuff vvvv
@@ -165,6 +212,26 @@ public class GuiHelper {
         }
     }
 	
+	public void drawColoredRect(int x1, int y1, int x2, int y2, int color) {
+		Color c = Color.rgba(color);
+		drawColoredRect(x1, y1, x2, y2, c.r, c.g, c.b, c.a);
+	}
+	
+	public void drawColoredRect(int x1, int y1, int x2, int y2, double r, double g, double b, double a) {
+		GL11.glColor4d(r, g, b, a);
+		GlStateManager.enableBlend();
+		GlStateManager.disableTexture2D();
+		GL11.glBegin(GL11.GL_QUADS);
+		
+		GL11.glVertex2d(x1, y1);
+		GL11.glVertex2d(x1, y2);
+		GL11.glVertex2d(x2, y2);
+		GL11.glVertex2d(x2, y1);
+		
+		GL11.glEnd();
+		GlStateManager.enableTexture2D();
+	}
+	
 	public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
     {
 		float f = (float)(startColor >> 24 & 255) / 255.0F;
@@ -193,5 +260,39 @@ public class GuiHelper {
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
     }
+	
+	public static class Color {
+		public double r,g,b,a;
+		
+		private Color(double r, double g, double b, double a) {
+			this.r = r; this.g = g; this.b = b; this.a = a;
+		}
+		
+		private Color(int color) {
+			r = (color >> 24) & 0xFF;
+			g = (color >> 16) & 0xFF;
+			b = (color >> 8) & 0xFF;
+			a = (color >> 0) & 0xFF;
+			
+			r /= 255;
+			g /= 255;
+			b /= 255;
+			a /= 255;
+		}
+		
+		
+		public static Color rgb(int rgb) {
+			return new Color(rgb << 8);
+		}
+		public static Color rgb(double r, double g, double b) {
+			return new Color(r,g,b,1.0);
+		}
+		public static Color rgba(int rgba) {
+			return new Color(rgba);
+		}
+		public static Color rgba(double r, double g, double b, double a) {
+			return new Color(r,g,b,a);
+		}
+	}
 	
 }

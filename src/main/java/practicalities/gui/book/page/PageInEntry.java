@@ -10,6 +10,7 @@ import practicalities.gui.book.element.ElementTitle;
 public class PageInEntry extends GuidePage {
 
 	String title;
+	String parent;
 	int pageNum;
 	
 	public PageInEntry(String pageName, int page) {
@@ -42,6 +43,16 @@ public class PageInEntry extends GuidePage {
 			@Override
 			public boolean isEnabled() {
 				return number < guideState.getMaxPageNum();
+			}
+		});
+		
+		this.navElements.add(new ElementButton(gui, -85, 1, 18, 10, 24, 206) {
+			public void click() {
+				guideState.goToEntryList(parent);
+			}
+			@Override
+			public boolean isEnabled() {
+				return true;
 			}
 		});
 	}

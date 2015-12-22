@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.util.ResourceLocation;
 import practicalities.PracticalitiesMod;
+import practicalities.gui.GuiHelper;
 import practicalities.gui.GuiScreenBase;
 import practicalities.gui.book.element.ElementProxy;
 import practicalities.gui.element.ElementScreenBase;
@@ -27,6 +28,7 @@ public class GuiGuide extends GuiScreenBase {
 	@Override
 	public void initGui() {
 		super.initGui();
+		GuiHelper.instance(); // initialize the GuiHelper
 		this.guiLeft = (this.width - MAIN_SIZE_X) / 2;
         this.guiTop = (this.height - MAIN_SIZE_Y) / 2;
         
