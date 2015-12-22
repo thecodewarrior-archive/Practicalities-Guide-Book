@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.util.StatCollector;
-import practicalities.gui.GuiHelper;
 import practicalities.gui.GuiScreenBase;
 import practicalities.gui.book.page.PageEntryList;
+import practicalities.gui.book.page.PageInEntry;
 
 public class GuideStateManager {
 
@@ -14,22 +14,34 @@ public class GuideStateManager {
 	
 	public static Map<String, PageEntryList> entryLists = new HashMap<String, PageEntryList>();
 	
+	public static void registerList(String name, String... entries) {
+		PageEntryList list = new PageEntryList();
+		for (int i = 0; i < entries.length; i++) {
+			list.entries.add(entries[i]);
+		}
+		entryLists.put(name, list);
+	}
+	
 	public static PageEntryList mainPage;
 	public static GuidePersistance persistance = GuidePersistance.instance();
 	
 	GuiScreenBase gui;
 	int xSize, ySize;
 	String currentPage;
+	String lastList;
 	int currentPageNum;
 	int maxPageNum;
 	
 	public GuideStateManager(GuiScreenBase gui, int xSize, int ySize) {
 		this.gui = gui; this.xSize = xSize; this.ySize = ySize;
-		mainPage = new PageEntryList();
-		mainPage.entries.add("intro");
-		mainPage.entries.add("intro");
-		mainPage.entries.add("intro");
-		mainPage.entries.add("intro");
+		if(mainPage == null || !entryLists.containsKey("list.root")) {
+			mainPage = new PageEntryList();
+			mainPage.entries.add("intro");
+			mainPage.entries.add("list.intro");
+			entryLists.put("list.root", mainPage);
+		}
+		
+		
 		if(persistance.didStopOnEntryList) {
 			goToEntryList(persistance.name);
 		} else {
@@ -37,11 +49,20 @@ public class GuideStateManager {
 		}
 	}
 	
+	public void goToEntryList() {
+		goToEntryList(lastList);
+	}
+	
 	public void goToEntryList(String name) {
-		if(name == null) {
-			mainPage.init(gui, this);
+		if(name != null) {
+			page = entryLists.get(name);
+		}
+		if(page == null || name == null) {
 			page = mainPage;
 		}
+		
+		page.init(gui, this);
+		this.lastList = name;
 		persistance.didStopOnEntryList = true;
 		persistance.name = name;
 	}
@@ -52,9 +73,11 @@ public class GuideStateManager {
 		}
 		if(number > maxPageNum)
 			number = maxPageNum;
+		page = GuidePage.getPage(gui, this, name, number);
+
 		this.currentPage = name;
 		this.currentPageNum = number;
-		page = GuidePage.getPage(gui, this, name, number);
+		
 		persistance.didStopOnEntryList = false;
 		persistance.name = name;
 		persistance.page = number;

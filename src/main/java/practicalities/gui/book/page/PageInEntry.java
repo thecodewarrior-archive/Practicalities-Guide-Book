@@ -10,7 +10,7 @@ import practicalities.gui.book.element.ElementTitle;
 public class PageInEntry extends GuidePage {
 
 	String title;
-	String parent;
+	public String parent;
 	int pageNum;
 	
 	public PageInEntry(String pageName, int page) {
@@ -25,6 +25,7 @@ public class PageInEntry extends GuidePage {
 		
 		final int number = pageNum;
 		final GuideStateManager guideState = state;
+		final String parent = this.parent;
 		
 		this.navElements.add(new ElementButton(gui, -13, 1, 12, 9, 0, 206) {
 			public void click() {
@@ -48,7 +49,7 @@ public class PageInEntry extends GuidePage {
 		
 		this.navElements.add(new ElementButton(gui, -85, 1, 18, 10, 24, 206) {
 			public void click() {
-				guideState.goToEntryList(parent);
+				guideState.goToEntryList();
 			}
 			@Override
 			public boolean isEnabled() {

@@ -14,8 +14,20 @@ public class GuiGuide extends GuiScreenBase {
 	public static int MAIN_SIZE_X = 170;
 	public static int MAIN_SIZE_Y = 193;
 	
+	boolean inited = false;
+	
+	public void init() {
+		if(inited)
+			return;
+		
+		GuideStateManager.registerList("list.intro", "list.root", "intro", "list.root");
+		
+		inited = true;
+	}
+	
 	public GuiGuide() {
 		super();
+		init();
 		this.texture = new ResourceLocation(PracticalitiesMod.TEXTURE_BASE + "textures/gui/guide.png");
 		this.xSize = MAIN_SIZE_X; this.ySize = MAIN_SIZE_Y;
 		state = new GuideStateManager(this, MAIN_SIZE_X, MAIN_SIZE_Y);

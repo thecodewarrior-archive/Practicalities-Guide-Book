@@ -3,12 +3,10 @@ package practicalities.gui.element;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import practicalities.gui.GuiHelper;
 import practicalities.gui.GuiScreenBase;
 
 public abstract class ElementScreenBase {

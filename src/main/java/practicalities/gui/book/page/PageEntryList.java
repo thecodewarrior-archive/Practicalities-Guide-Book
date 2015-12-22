@@ -14,6 +14,7 @@ public class PageEntryList extends GuidePage {
 	
 	@Override
 	public void init(GuiScreenBase gui, GuideStateManager state) {
+		mainElements.clear();
 		int top = 0;
 		for (String entry : entries) {
 			mainElements.add(new GuideEntry(gui, 0, top, state, entry));

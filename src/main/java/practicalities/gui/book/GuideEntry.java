@@ -1,6 +1,5 @@
 package practicalities.gui.book;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
@@ -28,11 +27,15 @@ public class GuideEntry extends ElementScreenBase {
 		super(gui, x, y, GuiGuide.MAIN_SIZE_X, HEIGHT);
 		this.state = state;
 		this.name = name;
-		this.icon = ItemHelper.instance().parseItemStack(StatCollector.translateToLocal("guide.entry."+name+".list.iconStack"));
+		this.icon = ItemHelper.instance().parseItemStack(StatCollector.translateToLocal(name.startsWith("list.") ? "guide."+name+".iconStack" : "guide.entry."+name+".list.iconStack"));
 	}
 	
 	public String getTranslatedName() {
-		return StatCollector.translateToLocal("guide.entry." + name + ".list.text");
+		if(name.startsWith("list.")) {
+			return StatCollector.translateToLocal("guide."+name+".text");
+		} else {
+			return StatCollector.translateToLocal("guide.entry." + name + ".list.text");
+		}
 	}
 
 	@Override
@@ -86,8 +89,12 @@ public class GuideEntry extends ElementScreenBase {
 	
 	@Override
 	public boolean onMousePressed(int paramInt1, int paramInt2, int paramInt3) {
-		state.currentPage = null;
-		state.goToPage(name, 0);
+//		state.currentPage = null;
+		if(name.startsWith("list.")) {
+			state.goToEntryList(name);
+		} else {
+			state.goToPage(name, 0);
+		}
 		return true;
 	}
 

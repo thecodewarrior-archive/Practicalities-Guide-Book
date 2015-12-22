@@ -2,6 +2,12 @@ itemGroup.tabPracticalities=Practicalities
 
 guide.welcome=The practical guide to practical things
 
+guide.list.root.text=Root node
+guide.list.root.iconStack=minecraft:iron_ingot
+
+guide.list.intro.text=Intro node
+guide.list.intro.iconStack=minecraft:sand
+
 guide.entry.intro.icon=practicalities:diamondRod
 guide.entry.intro.name=Introduction
 guide.entry.intro.summary=A bunch of practical things
@@ -24,6 +30,6 @@ guide.entry.intro.page.3.type=recipe
 guide.entry.intro.page.3=[minecraft:iron_pickaxe][minecraft:iron_pickaxe|1|111|{display:{Name:"SOmeNaMe"},ench:[{id:32,lvl:7268}]}]
 guide.entry.intro.page.3.text=That makes the recipe even better!
 
-guide.entry.intro.page.4=§nChecklist of things to do§r\n\n■ add recipes\n§8■§0 add a navigation system\n     ■ add basic entry list\n     §7■§0 add support for multiple lists\n§7■§0 add more types of pages.
+guide.entry.intro.page.4=§nChecklist of things to do§r\n\n■ add recipes\n■ add a navigation system\n     ■ add basic entry list\n     ■ add support for multiple lists\n§7■§0 add more types of pages.
 
 enchantment.level.7268=MMMMMMMCCLXVIII
